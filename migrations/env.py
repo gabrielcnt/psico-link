@@ -1,19 +1,25 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
 from alembic import context
+
+from sqlalchemy import create_engine
+
+from sqlalchemy import pool
 
 from app.shared.config.settings import settings
 
 from app.shared.database.base import Base
 
-from sqlalchemy import create_engine
+from app.auth.models import User
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+
+x_args = context.get_x_argument(as_dictionary=True)
+
+database_url = x_args.get("database_url", settings.database_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -44,7 +50,7 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    url = database_url
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -64,7 +70,7 @@ def run_migrations_online() -> None:
 
     """
     connectable = create_engine(
-        settings.database_url,
+        database_url,
         poolclass=pool.NullPool,
     )
 
