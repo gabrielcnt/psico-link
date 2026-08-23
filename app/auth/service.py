@@ -1,8 +1,8 @@
+from app.auth.exceptions import EmailAlreadyExistError, InvalidCredentialError
 from app.auth.models import User
 from app.auth.repository import UserRepository
 from app.auth.schemas import UserCreate
-from app.shared.exceptions.handlers import EmailAlreadyExistError
-from app.shared.security.password import hash_password
+from app.shared.security.password import hash_password, verify_password
 
 
 class UserService:
@@ -19,3 +19,14 @@ class UserService:
         )
 
         return self.repository.create(user)
+
+    def authenticate(self, email: str, password: str) -> User:
+        user = self.repository.get_by_email(email)
+
+        if user is None:
+            raise InvalidCredentialError()
+
+        if not verify_password(password, user.password_hash):
+            raise InvalidCredentialError()
+
+        return user
