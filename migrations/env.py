@@ -11,6 +11,7 @@ from app.shared.config.settings import settings
 from app.shared.database.base import Base
 
 from app.auth.models import User
+from app.profile.models import Profile
 
 
 # this is the Alembic Config object, which provides

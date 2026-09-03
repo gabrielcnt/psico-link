@@ -17,8 +17,8 @@ def test_get_current_user(client):
 
     login_response = client.post(
         "api/v1/auth/login",
-        json={
-            "email": "tchuco@email.com",
+        data={
+            "username": "tchuco@email.com",
             "password": "12345678",
         },
     )
