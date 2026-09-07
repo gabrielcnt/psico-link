@@ -2,7 +2,12 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from app.auth.exceptions import EmailAlreadyExistError, InvalidCredentialError
-from app.profile.exceptions import ProfileAlreadyExistsError, SlugAlreadyExistsError
+from app.profile.exceptions import (
+    ProfileAlreadyExistsError,
+    ProfileNotFoundError,
+    ProfileUserUnauthorizedError,
+    SlugAlreadyExistsError,
+)
 
 
 def register_exception_handlers(app: FastAPI) -> None:
@@ -35,3 +40,15 @@ def register_exception_handlers(app: FastAPI) -> None:
         request: Request, exc: SlugAlreadyExistsError
     ) -> JSONResponse:
         return JSONResponse(status_code=409, content={"detail": str(exc)})
+
+    @app.exception_handler(ProfileNotFoundError)
+    async def profile_not_found_error(
+        request: Request, exc: ProfileNotFoundError
+    ) -> JSONResponse:
+        return JSONResponse(status_code=404, content={"detail": str(exc)})
+
+    @app.exception_handler(ProfileUserUnauthorizedError)
+    async def profile_user_unauthorized_error(
+        request: Request, exc: ProfileUserUnauthorizedError
+    ) -> JSONResponse:
+        return JSONResponse(status_code=403, content={"detail": str(exc)})
