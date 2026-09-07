@@ -12,6 +12,17 @@ class ProfileCreate(BaseModel):
     template: str = Field(min_length=1)
 
 
+class ProfileUpdate(BaseModel):
+    professional_name: str | None = Field(default=None, min_length=3)
+    crp: str | None = Field(default=None, min_length=8)
+    bio: str | None = Field(default=None, min_length=10)
+    city: str | None = None
+    photo_url: str | None = None
+    template: str | None = Field(default=None, min_length=1)
+
+    model_config = ConfigDict(from_attributes=True, extra="forbid")
+
+
 class ProfileResponse(BaseModel):
     id: UUID
     user_id: UUID
