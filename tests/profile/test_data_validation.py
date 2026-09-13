@@ -58,3 +58,45 @@ def test_slug_validation(client, login):
 
     data = response.json()
     assert data["slug"] == "ester-vieira-da-vovo-05123427"
+
+
+
+def test_professional_name_min_length(client, profile_id, login):
+    response = client.patch(
+        f"api/v1/profile/{profile_id}",
+        json={
+            "professional_name": "ga",
+        },
+        headers={"Authorization": f"Bearer {login}"},
+    )
+
+    assert response.status_code == 422
+
+
+def test_crp_min_length(client, profile_id, login):
+    response = client.patch(
+        f"api/v1/profile/{profile_id}",
+        json={"crp": "1542"},
+        headers={"Authorization": f"Bearer {login}"},
+    )
+    assert response.status_code == 422
+
+
+def test_bio_min_length(client, profile_id, login):
+    response = client.patch(
+        f"api/v1/profile/{profile_id}",
+        json={"bio": "teste"},
+        headers={"Authorization": f"Bearer {login}"},
+    )
+
+    assert response.status_code == 422
+
+
+def test_template_min_length(client, profile_id, login):
+    response = client.patch(
+        f"api/v1/profile/{profile_id}",
+        json={"template": ""},
+        headers={"Authorization": f"Bearer {login}"},
+    )
+
+    assert response.status_code == 422

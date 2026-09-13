@@ -2,6 +2,11 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from app.auth.exceptions import EmailAlreadyExistError, InvalidCredentialError
+from app.link.exception import (
+    LinkNotFoundError,
+    LinkTitleAlreadyExistsError,
+    LinkUrlAlreadyExistsError,
+)
 from app.profile.exceptions import (
     ProfileAlreadyExistsError,
     ProfileNotFoundError,
@@ -52,3 +57,21 @@ def register_exception_handlers(app: FastAPI) -> None:
         request: Request, exc: ProfileUserUnauthorizedError
     ) -> JSONResponse:
         return JSONResponse(status_code=403, content={"detail": str(exc)})
+
+    @app.exception_handler(LinkTitleAlreadyExistsError)
+    async def link_title_already_exists_error(
+        request: Request, exc: LinkTitleAlreadyExistsError
+    ) -> JSONResponse:
+        return JSONResponse(status_code=409, content={"detail": str(exc)})
+
+    @app.exception_handler(LinkUrlAlreadyExistsError)
+    async def link_url_already_exists_error(
+        request: Request, exc: LinkUrlAlreadyExistsError
+    ) -> JSONResponse:
+        return JSONResponse(status_code=409, content={"detail": str(exc)})
+
+    @app.exception_handler(LinkNotFoundError)
+    async def link_not_found_error(
+        request: Request, exc: LinkNotFoundError
+    ) -> JSONResponse:
+        return JSONResponse(status_code=404, content={"detail": str(exc)})

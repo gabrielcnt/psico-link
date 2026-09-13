@@ -12,7 +12,7 @@ from app.shared.database.base import Base
 
 from app.auth.models import User
 from app.profile.models import Profile
-
+from app.link.models import Link
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
