@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.auth.routes import router as auth_router
+from app.link.routes import router as link_router
 from app.profile.routes import router as profile_router
 from app.shared.exceptions.handlers import register_exception_handlers
 
@@ -8,6 +9,7 @@ app = FastAPI(title="PsicoLink API", version="1.0.0")
 
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(profile_router, prefix="/api/v1")
+app.include_router(link_router, prefix="/api/v1")
 register_exception_handlers(app)
 
 

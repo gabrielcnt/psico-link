@@ -25,6 +25,10 @@ class ProfileRepository:
 
         return profile
 
+    def get_by_id(self, profile_id: UUID) -> Profile | None:
+        statement = select(Profile).where(Profile.id == profile_id)
+        return self.session.scalar(statement)
+
     def get_by_user_id(self, user_id: UUID) -> Profile | None:
         statement = select(Profile).where(Profile.user_id == user_id)
         return self.session.scalar(statement)

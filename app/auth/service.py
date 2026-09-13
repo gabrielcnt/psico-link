@@ -56,20 +56,10 @@ class UserService:
 
         token_hash = hash_reset_token(token)
 
-        print("TOKEN RECEBIDO:", token)
-        print("HASH GERADO:", token_hash)
-
         reset_token = self.repository.get_password_reset_token(token_hash)
-
-        print("RESET TOKEN:", reset_token)
 
         if reset_token is None:
             raise InvalidCredentialError("Invalid reset token")
-
-        print("USED AT:", reset_token.used_at)
-        print("EXPIRES AT:", reset_token.expires_at)
-        print("NOW:", datetime.now(UTC))
-
 
         if reset_token.used_at is not None:
             raise InvalidCredentialError("Reset token already used")

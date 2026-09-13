@@ -26,11 +26,11 @@ def test_request_password_reset(client, monkeypatch):
 
 
 def test_generate_reset_token():
-    token, token_hah = generate_reset_token()
+    token, token_hash = generate_reset_token()
 
     assert token
-    assert token_hah
-    assert token != token_hah
+    assert token_hash
+    assert token != token_hash
 
 
 def test_reset_password(client, monkeypatch):
@@ -58,8 +58,6 @@ def test_reset_password(client, monkeypatch):
             "email": "gabriel@email.com",
         },
     )
-
-    print(response.json())
     
     assert response.status_code == 200
 
@@ -70,7 +68,7 @@ def test_reset_password(client, monkeypatch):
             "new_password": "87654321",
         },
     )
-    print(response.json())
+
     assert response.status_code == 200
 
     response = client.post(

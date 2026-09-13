@@ -72,16 +72,33 @@ def login(client, user):
 
 
 @pytest.fixture
-def login(client, second_user):
+def second_login(client, second_user):
     response = client.post(
         "api/v1/auth/login",
-        data={"username": second_user["email"], "password": second_user["password"]},
+        data={"username": "ivmaria@email.com", "password": second_user["password"]},
     )
 
     token_data = response.json()
     token = token_data["access_token"]
 
     return token
+
+
+@pytest.fixture
+def second_profile_id(client, second_login):
+    response = client.post(
+        "api/v1/profile",
+        json={
+            "professional_name": "ivone maria",
+            "crp": "06/97682",
+            "bio": "cuidarei da sua loucura",
+            "city": "marica",
+            "template": "template_01",
+        },
+        headers={"Authorization": f"Bearer {second_login}"},
+    )
+
+    return response.json()["id"]
 
 
 @pytest.fixture
@@ -117,6 +134,17 @@ def profile(client, login):
         headers={"Authorization": f"Bearer {login}"},
     )
 
-    print(response.json())
+    return response.json()
+
+@pytest.fixture
+def link(client, login, profile_id):
+    response = client.post(
+        f"/api/v1/profile/{profile_id}/links/",
+        json={
+            "title": "tiktok",
+            "url": "https://www.tiktok.com"
+        },
+        headers={"Authorization": f"Bearer {login}"}
+    )
 
     return response.json()
