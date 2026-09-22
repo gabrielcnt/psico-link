@@ -35,4 +35,9 @@ class Profile(Base):
         onupdate=lambda: datetime.now(UTC),
     )
 
-    links: Mapped[list["Link"]] = relationship(back_populates="profile", cascade="all, delete-orphan", order_by="Link.position")
+    links: Mapped[list["Link"]] = relationship(
+        back_populates="profile", cascade="all, delete-orphan", order_by="Link.position"
+    )
+    profile_specialties: Mapped[list["ProfileSpecialty"]] = relationship(
+        back_populates="profile", cascade="all, delete-orphan"
+    )

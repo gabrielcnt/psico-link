@@ -10,7 +10,7 @@ from app.profile.models import Profile
 router = APIRouter(prefix="/profile", tags=["links"])
 
 
-@router.post("/{profile_id}/links", response_model=LinkResponse, status_code=201)
+@router.post("/{profile_id}/links/", response_model=LinkResponse, status_code=201)
 def create_link(
     data: LinkCreate,
     profile: Profile = Depends(get_current_profile),
@@ -37,3 +37,11 @@ def delete_link(
     service: LinkService = Depends(get_link_service),
 ):
     service.delete_link(link)
+
+
+@router.get("/{profile_id}/links/", response_model=list[LinkResponse], status_code=200)
+def show_links(
+    profile: Profile = Depends(get_current_profile),
+    service: LinkService = Depends(get_link_service),
+):
+    return service.get_by_profile(profile.id)

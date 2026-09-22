@@ -13,6 +13,11 @@ from app.profile.exceptions import (
     ProfileUserUnauthorizedError,
     SlugAlreadyExistsError,
 )
+from app.specialty.exceptions import (
+    ProfileSpecialtyAlreadyExistsError,
+    ProfileSpecialtyNotFoundError,
+    ProfileSpecialtyPositionNoneError,
+)
 
 
 def register_exception_handlers(app: FastAPI) -> None:
@@ -73,5 +78,23 @@ def register_exception_handlers(app: FastAPI) -> None:
     @app.exception_handler(LinkNotFoundError)
     async def link_not_found_error(
         request: Request, exc: LinkNotFoundError
+    ) -> JSONResponse:
+        return JSONResponse(status_code=404, content={"detail": str(exc)})
+
+    @app.exception_handler(ProfileSpecialtyAlreadyExistsError)
+    async def profile_specialty_already_exists_error(
+        request: Request, exc: ProfileSpecialtyAlreadyExistsError
+    ) -> JSONResponse:
+        return JSONResponse(status_code=409, content={"detail", str(exc)})
+
+    @app.exception_handler(ProfileSpecialtyPositionNoneError)
+    async def profile_specialty_position_none_error(
+        request: Request, exc: ProfileSpecialtyPositionNoneError
+    ) -> JSONResponse:
+        return JSONResponse(status_code=422, content={"detail": str(exc)})
+
+    @app.exception_handler(ProfileSpecialtyNotFoundError)
+    async def profile_specialty_not_found_error(
+        request: Request, exc: ProfileSpecialtyNotFoundError
     ) -> JSONResponse:
         return JSONResponse(status_code=404, content={"detail": str(exc)})

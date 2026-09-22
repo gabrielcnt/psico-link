@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from app.link.exception import (
     LinkTitleAlreadyExistsError,
     LinkUrlAlreadyExistsError,
@@ -74,3 +76,6 @@ class LinkService:
 
     def delete_link(self, link: Link) -> None:
         self.repository.delete_link(link)
+
+    def get_by_profile(self, profile: UUID) -> list[Link]:
+        return self.repository.get_by_profile_id(profile)

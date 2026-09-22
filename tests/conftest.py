@@ -4,7 +4,10 @@ from fastapi.testclient import TestClient
 from app.main import app
 from app.shared.database.base import Base
 from app.shared.database.dependencies import get_db
-from tests.test_database import get_test_db, test_engine
+from app.specialty.models import Specialty
+from app.specialty.repository import SpecialtyRepository
+from scripts.seed_specialties import seed_specialties
+from tests.test_database import TestSessionLocal, get_test_db, test_engine
 
 
 @pytest.fixture(autouse=True)
@@ -136,15 +139,118 @@ def profile(client, login):
 
     return response.json()
 
+
 @pytest.fixture
 def link(client, login, profile_id):
     response = client.post(
         f"/api/v1/profile/{profile_id}/links/",
-        json={
-            "title": "tiktok",
-            "url": "https://www.tiktok.com"
-        },
-        headers={"Authorization": f"Bearer {login}"}
+        json={"title": "tiktok", "url": "https://www.tiktok.com"},
+        headers={"Authorization": f"Bearer {login}"},
     )
 
     return response.json()
+
+
+@pytest.fixture
+def second_link(client, login, profile_id):
+    response = client.post(
+        f"/api/v1/profile/{profile_id}/links/",
+        json={"title": "facebook", "url": "https://www.facebook.com"},
+        headers={"Authorization": f"Bearer {login}"},
+    )
+
+    return response.json()
+
+
+@pytest.fixture
+def third_link(client, login, profile_id):
+    response = client.post(
+        f"/api/v1/profile/{profile_id}/links/",
+        json={"title": "instagram", "url": "https://www.instagram.com"},
+        headers={"Authorization": f"Bearer {login}"},
+    )
+
+    return response.json()
+
+
+@pytest.fixture
+def specialty():
+    with TestSessionLocal() as session:
+        specialty = Specialty(name="Psicologia clínica")
+        session.add(specialty)
+        session.commit()
+        session.refresh(specialty)
+
+    return specialty
+
+
+@pytest.fixture
+def second_specialty():
+    with TestSessionLocal() as session:
+        specialty = Specialty(name="Psicologia infantil")
+        session.add(specialty)
+        session.commit()
+        session.refresh(specialty)
+    return specialty
+
+
+@pytest.fixture
+def third_specialty():
+    with TestSessionLocal() as session:
+        specialty = Specialty(name="Psicologia de casal")
+        session.add(specialty)
+        session.commit()
+        session.refresh(specialty)
+    return specialty
+
+
+@pytest.fixture
+def add_specialty(client, login, profile_id, specialty):
+    response = client.post(
+        f"/api/v1/profile/{profile_id}/specialties",
+        json={"specialty_id": str(specialty.id)},
+        headers={"Authorization": f"Bearer {login}"},
+    )
+    return response
+
+
+@pytest.fixture
+def specialty_id(client, login, profile_id, specialty):
+    response = client.post(
+        f"/api/v1/profile/{profile_id}/specialties/",
+        json={"specialty_id": str(specialty.id)},
+        headers={"Authorization": f"Bearer {login}"},
+    )
+    data = response.json()
+    return data["specialty_id"]
+
+
+@pytest.fixture
+def second_specialty_id(client, login, profile_id, second_specialty):
+    response = client.post(
+        f"/api/v1/profile/{profile_id}/specialties/",
+        json={"specialty_id": str(second_specialty.id)},
+        headers={"Authorization": f"Bearer {login}"},
+    )
+    data = response.json()
+    return data["specialty_id"]
+
+
+@pytest.fixture
+def third_specialty_id(client, login, profile_id, third_specialty):
+    response = client.post(
+        f"/api/v1/profile/{profile_id}/specialties",
+        json={"specialty_id": str(third_specialty.id)},
+        headers={"Authorization": f"Bearer {login}"},
+    )
+    data = response.json()
+    return data["specialty_id"]
+
+
+@pytest.fixture
+def specialties():
+    with TestSessionLocal() as session:
+        seed_specialties(session)
+        repository = SpecialtyRepository(session)
+        list_specialties = repository.list_specialties()
+    return list_specialties

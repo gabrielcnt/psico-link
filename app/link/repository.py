@@ -26,6 +26,8 @@ class LinkRepository:
         )
         return self.session.scalars(statement).all()
 
+    
+
     def get_by_profile_and_title(
         self, profile_id: UUID, title: str, exclude_link_id: UUID | None = None
     ) -> Link | None:
@@ -46,7 +48,7 @@ class LinkRepository:
             statement = statement.where(Link.id != exclude_link_id)
         return self.session.scalar(statement)
 
-    def get_max_position_by_profile_id(self, profile_Id: UUID) -> Link | None:
+    def get_max_position_by_profile_id(self, profile_Id: UUID) -> int | None:
         statement = select(func.max(Link.position)).where(
             Link.profile_id == profile_Id,
         )
