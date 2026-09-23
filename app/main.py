@@ -9,9 +9,9 @@ from app.specialty.routes import router as profile_specialty_router
 app = FastAPI(title="PsicoLink API", version="1.0.0")
 
 app.include_router(auth_router, prefix="/api/v1")
+app.include_router(profile_specialty_router, prefix="/api/v1")
 app.include_router(profile_router, prefix="/api/v1")
 app.include_router(link_router, prefix="/api/v1")
-app.include_router(profile_specialty_router, prefix="/api/v1")
 register_exception_handlers(app)
 
 

@@ -28,3 +28,8 @@ class ProfileSpecialtyResponse(BaseModel):
     profile_id: UUID
     specialty_id: UUID
     position: int
+
+class PublicSpecialtyResponse(BaseModel):
+    id: UUID
+    name: str
+    position: int
