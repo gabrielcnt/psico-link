@@ -38,11 +38,11 @@ def test_profile_not_found(client, login):
     assert response.status_code == 404
 
 
-def test_user_changing_another_users_profile(client, login, profile_id):
+def test_user_changing_another_users_profile(client, second_login, profile_id):
     response = client.patch(
         f"api/v1/profile/{profile_id}",
         json={"bio": "Tentando mudar a descrição de outro usuario"},
-        headers={"Authorization": f"Bearer {login}"},
+        headers={"Authorization": f"Bearer {second_login}"},
     )
 
     assert response.status_code == 403

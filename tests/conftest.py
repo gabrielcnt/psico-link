@@ -2,6 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.profile.repository import ProfileRepository
 from app.shared.database.base import Base
 from app.shared.database.dependencies import get_db
 from app.specialty.models import Specialty
@@ -107,7 +108,7 @@ def second_profile_id(client, second_login):
 @pytest.fixture
 def profile_id(client, login):
     response = client.post(
-        "api/v1/profile",
+        "/api/v1/profile",
         json={
             "professional_name": "gabriel vieira",
             "crp": "06/46872",
@@ -126,7 +127,7 @@ def profile_id(client, login):
 @pytest.fixture
 def profile(client, login):
     response = client.post(
-        "api/v1/profile",
+        "/api/v1/profile",
         json={
             "professional_name": "gabriel vieira",
             "crp": "06/46872",
@@ -136,8 +137,25 @@ def profile(client, login):
         },
         headers={"Authorization": f"Bearer {login}"},
     )
-
     return response.json()
+
+
+@pytest.fixture
+def profile_slug(profile_id):
+    with TestSessionLocal() as session:
+        repository = ProfileRepository(session)
+        profile = repository.get_by_id(profile_id)
+
+    return profile.slug
+
+
+@pytest.fixture
+def second_profile_lug(second_profile_id):
+    with TestSessionLocal() as session:
+        repository = ProfileRepository(session)
+        profile = repository.get_by_id(second_profile_id)
+
+    return profile.slug
 
 
 @pytest.fixture
